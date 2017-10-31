@@ -21,15 +21,20 @@ void moveBackward(int speed){
    analogWrite(motor_1, -1*speed);
    analogWrite(motor_2, speed);
 }
-void moveRight(int speed){
+void turnRight(int speed){
    analogWrite(motor_1, speed);
    analogWrite(motor_2, speed);
 }
 
-void moveLeft(int speed){
+void turnLeft(int speed){
    analogWrite(motor_1, -1*speed);
    analogWrite(motor_2, 1*speed);
 }
+
+void turn180() {
+  
+}
+
 void eStop(){
    analogWrite(motor_1, 0);
    analogWrite(motor_2, 0);
