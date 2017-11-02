@@ -24,3 +24,14 @@ void loop() {
       delay(10);
   }
 }
+void openServo(pos){
+    for(pos = 0; pos < 180; pos++){
+      test1.write(pos);
+      delay(10);
+  }
+  for(pos = 180; pos > 0; pos--){
+      test1.write(pos);
+      delay(10);
+  }
+}
+
