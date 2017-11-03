@@ -23,7 +23,7 @@ void setup() {
 
 void loop() {
   if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
-    moveForward(speed);
+    moveForward(speed); // speeds are different - determine after testing - Sam
     delay(endZone);
     moveBackward(speed);
     delay(endZone);
@@ -36,8 +36,6 @@ void loop() {
       blockBlock();
     }
     /*
-      if(colorCorrect){
-      time = 1; // whatever
       memX  = distanceOne - memX;
       derX = memX / time;
       memY  = distanceTwo - memX;
@@ -46,6 +44,7 @@ void loop() {
       if(derX < 0 && derY < 0){
       turnLeft(speed);
       moveForward(speed);
+      delay(3000);
       }
       if(derX < 0 && derY > 0){
       turnRight(speed);
