@@ -1,28 +1,45 @@
 #include <Servo.h>
-Servo whatever; //"call it whatever' -Jason
 
-double distanceOne, distanceTwo; // These are the values from the ultrasonic sensors.
-boolean colorCorrect, onWL, haveBlock; // Determines whether the color sensor detects the correct color and the infared
-double memX = 0, derX, memY = 0, derY, enemyColorS, enemyColorE, ourColorS, ourColorE; //The derivative variables are for FULL Autonomous. The enemy color start and end range. The our color start and end range.
-double speed;
-double white;
-long delay, turn, endZone; // How long it will take to then switch / change direction of motor and the amount of time it takes to turn
-double safeDist, pitDist; //Safe distance from the pit.
-const int ultraSonicOne, ultraSonicTwo, infared, servoOne, servoTwo, colorSensor, motorOne, motorTwo, radio;
+// Instanciations of Servo objects
+Servo servo1;
+Servo servo2;
+
+// These are the values from the ultrasonic sensors.
+//double distanceOne, distanceTwo; 
+
+// Determines whether the color sensor detects the correct color and the infared
+//boolean colorCorrect, onWL, haveBlock; 
+
+// The derivative variables are for FULL Autonomous. The enemy color start and end range. The our color start and end range.
+//double memX = 0, derX, memY = 0, derY, enemyColorS, enemyColorE, ourColorS, ourColorE; 
+
+int speed = 100;
+//double white;
+
+// How long it will take to then switch / change direction of motor and the amount of time it takes to turn
+//long delay, turn, endZone;
+
+// Safe distance from the pit. 
+//double safeDist, pitDist; 
+
+//const int ultraSonicOne, ultraSonicTwo, infared, colorSensor, radio;
+const int motorOne = 11;
+const int motorTwo = 12;
 boolean auton = false;
 
 void setup() {
-  Serial.begin(9600);  // put your setup code here, to run once:
-  
-  Serial.pinMode(ultraSonicOne, INPUT);
+  // put your setup code here, to run once:
+  servo1.attach(9);
+  servo2.attach(10);
+  Serial.begin(9600);  
+ 
+  /*Serial.pinMode(ultraSonicOne, INPUT);
   Serial.pinMode(ultraSonicTwo, INPUT);
-  Serial.pinMode(infared, INPUT);
-  Serial.pinMode(servoOne, OUTPUT);
-  Serial.pinMode(servoTwo, OUTPUT);
-  Serial.pinMode(colorSensor, INPUT);
-  Serial.pinMode(motorOne, OUTPUT);
-  Serial.pinMode(motorTwo, OUTPUT);
-  Serial.pinMode(radio, INPUT);
+  Serial.pinMode(infared, INPUT); */
+  //Serial.pinMode(colorSensor, INPUT);
+  pinMode(motorOne, OUTPUT);
+  pinMode(motorTwo, OUTPUT);
+  //Serial.pinMode(radio, INPUT);
   
   eStop();
 }
@@ -30,8 +47,9 @@ void setup() {
 void loop() {
   checkInput();
   
-  if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
-    moveForward(speed); // speeds are different - determine after testing - Sam
+  /*if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
+    // speeds are different - determine after testing - Sam
+    moveForward(speed); 
     delay(endZone);
     moveBackward(speed);
     delay(endZone);
@@ -43,11 +61,12 @@ void loop() {
   } 
   else {
     blockBlock();
-  }
+  }*/
 }
 
-void whiteLineFollower() {
-  if (distance1 < safeDist && distance2 < safeDist) {               // White Line Follower + Turn at the end of the line (corner turns - Darren Kong)
+/*void whiteLineFollower() {
+  // White Line Follower + Turn at the end of the line (corner turns - Darren Kong)
+  if (distance1 < safeDist && distance2 < safeDist) {
     turnRight(speed);
     delay(turn);
   }
@@ -57,7 +76,8 @@ void whiteLineFollower() {
   } 
   else {
     moveForward(speed);
-    checkWL(); // check white line
+    // check white line
+    checkWL(); 
     delay(delay);
     if (onWL) {
       continue;
@@ -110,30 +130,39 @@ boolean checkWL() {
   else {
     onWhiteLine = true;
   }
-}
+}*/
 
 void checkInput() {
-  int autoButton = Serial.read();
+  char autoButton = Serial.read();
+  /*if (Serial.available() > 0) {
+    autoButton = Serial.read();
+  }*/
 
-  if (autoButton = KEY_LEFT_CTRL) {
+  if (autoButton == 'm') {
     !auton;
+    Serial.print(autoButton);
   }
   
   if (!auton) {
-    if (UP_BUTTON) {
-      Motor.moveForward(NUM);
+    if (autoButton == 'w') {
+      moveForward(speed);
+      Serial.print(autoButton);
     }
-    if (DOWN_BUTTON) {
-      Motor.moveBackward(NUM);
+    if (autoButton == 's') {
+      moveBackward(speed);
+      Serial.print(autoButton);
     }
-    if (RIGHT_BUTTON) {
-      Motor.turnRight(NUM);
+    if (autoButton == 'd') {
+      turnRight(speed);
+      Serial.print(autoButton);
     }
-    if (LEFT_BUTTON) {
-      Motor.turnLeft(NUM);
+    if (autoButton == 'a') {
+      turnLeft(speed);
+      Serial.print(autoButton);
     }
-    if (STOP_BUTTON) {
-      Motor.eStop();
+    if (autoButton == 'n') {
+      eStop();
+      Serial.print(autoButton);
     }
   }
 }
@@ -164,3 +193,20 @@ void eStop(){
    analogWrite(motorOne, 0);
    analogWrite(motorTwo, 0);
 }
+
+void openServo() {
+  for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
+    servo1.write(i);
+    servo2.write(j);
+    delay(2);
+  } 
+}
+
+void closeServo() {
+  for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
+    servo1.write(j);
+    servo2.write(i);
+    delay(2);
+  }
+}
+
