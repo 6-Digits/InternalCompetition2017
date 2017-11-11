@@ -6,7 +6,7 @@ double distance;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(trigPin, OUTPUT);
+  pinMode(trigPin, OUTPUT); //Set trigger  to ouptut
   pinMode(echoPin, INPUT);
   Serial.begin(9600);
 }
