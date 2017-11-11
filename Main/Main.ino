@@ -12,10 +12,9 @@ Servo servo2;
 
 // The derivative variables are for FULL Autonomous. The enemy color start and end range. The our color start and end range.
 //double memX = 0, derX, memY = 0, derY, enemyColorS, enemyColorE, ourColorS, ourColorE; 
-
+//Suicide Code
 int speed = 100;
 //double white;
-
 // How long it will take to then switch / change direction of motor and the amount of time it takes to turn
 //long delay, turn, endZone;
 
@@ -23,8 +22,10 @@ int speed = 100;
 //double safeDist, pitDist; 
 
 //const int ultraSonicOne, ultraSonicTwo, infared, colorSensor, radio;
-const int motorOne = 11;
-const int motorTwo = 12;
+const int M1F= 5;
+const int M1B = 6;
+const int M2F = 7;
+const int M2B = 8;
 boolean auton = false;
 
 void setup() {
@@ -37,8 +38,10 @@ void setup() {
   Serial.pinMode(ultraSonicTwo, INPUT);
   Serial.pinMode(infared, INPUT); */
   //Serial.pinMode(colorSensor, INPUT);
-  pinMode(motorOne, OUTPUT);
-  pinMode(motorTwo, OUTPUT);
+  pinMode(M1F, OUTPUT);
+  pinMode(M1B, OUTPUT);
+  pinMode(M2F, OUTPUT);
+  pinMode(M2B, OUTPUT);
   //Serial.pinMode(radio, INPUT);
   
   eStop();
@@ -168,21 +171,29 @@ void checkInput() {
 }
 
 void moveForward(int speed){
-   analogWrite(motorOne, speed);
-   analogWrite(motorTwo, -1 * speed);
+   analogWrite(M1F, speed);
+   analogWrite(M1B, 0);
+   analogWrite(M2F, speed); 
+   analogWrite(M2B, 0);
 }
 void moveBackward(int speed){
-   analogWrite(motorOne, -1*speed);
-   analogWrite(motorTwo, speed);
+   analogWrite(M1F, 0); 
+   analogWrite(M1B, speed);
+   analogWrite(M2F, 0);
+   analogWrite(M2B, speed);
 }
 void turnRight(int speed){
-   analogWrite(motorOne, speed);
-   analogWrite(motorTwo, speed);
+   analogWrite(M1F, speed);
+   analogWrite(M1B, 0);
+   analogWrite(M2F, 0);
+   analogWrite(M2B, speed);
 }
 
 void turnLeft(int speed){
-   analogWrite(motorOne, -1*speed);
-   analogWrite(motorTwo, 1*speed);
+   analogWrite(M1F, 0);
+   analogWrite(M1B, speed);
+   analogWrite(M2F, speed);
+   analogWrite(M2B, 0);
 }
 
 void turn180() {
@@ -190,8 +201,10 @@ void turn180() {
 }
 
 void eStop(){
-   analogWrite(motorOne, 0);
-   analogWrite(motorTwo, 0);
+   analogWrite(M1F, 0);
+   analogWrite(M1B, 0);
+   analogWrite(M2F, 0);
+   analogWrite(M2B, 0);
 }
 
 void openServo() {
