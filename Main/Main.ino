@@ -26,18 +26,19 @@ const int M1F= 5;
 const int M1B = 6;
 const int M2F = 7;
 const int M2B = 8;
+
 boolean auton = false;
 
 void setup() {
   // put your setup code here, to run once:
-  servo1.attach(9);
-  servo2.attach(10);
+  servo1.attach(10);
+  servo2.attach(11);
   Serial.begin(9600);  
  
   /*Serial.pinMode(ultraSonicOne, INPUT);
   Serial.pinMode(ultraSonicTwo, INPUT);
-  Serial.pinMode(infared, INPUT); */
-  //Serial.pinMode(colorSensor, INPUT);
+  Serial.pinMode(infared, INPUT); 
+  Serial.pinMode(colorSensor, INPUT);*/
   pinMode(M1F, OUTPUT);
   pinMode(M1B, OUTPUT);
   pinMode(M2F, OUTPUT);
@@ -142,30 +143,44 @@ void checkInput() {
   }*/
 
   if (autoButton == 'm') {
-    !auton;
-    Serial.print(autoButton);
+    auton = !auton;
+    if (auton) {
+      Serial.println("Autonomous mode activated");
+    }
+    else {
+      Serial.println("Autonomous mode deactivated");
+    }
+    Serial.println(autoButton);
   }
   
   if (!auton) {
     if (autoButton == 'w') {
+      Serial.println(autoButton);
       moveForward(speed);
-      Serial.print(autoButton);
     }
     if (autoButton == 's') {
+      Serial.println(autoButton);
       moveBackward(speed);
-      Serial.print(autoButton);
     }
     if (autoButton == 'd') {
+      Serial.println(autoButton);
       turnRight(speed);
-      Serial.print(autoButton);
     }
     if (autoButton == 'a') {
+      Serial.println(autoButton);
       turnLeft(speed);
-      Serial.print(autoButton);
     }
     if (autoButton == 'n') {
+      Serial.println(autoButton);
       eStop();
-      Serial.print(autoButton);
+    }
+    if (autoButton == 'o') {
+      Serial.println(autoButton);
+      openServo();
+    }
+    if (autoButton == 'p') {
+      Serial.println(autoButton);
+      closeServo();
     }
   }
 }
@@ -175,18 +190,21 @@ void moveForward(int speed){
    analogWrite(M1B, 0);
    analogWrite(M2F, speed); 
    analogWrite(M2B, 0);
+   Serial.println("Moving Forward");
 }
 void moveBackward(int speed){
    analogWrite(M1F, 0); 
    analogWrite(M1B, speed);
    analogWrite(M2F, 0);
    analogWrite(M2B, speed);
+   Serial.println("Moving Backward");
 }
 void turnRight(int speed){
    analogWrite(M1F, speed);
    analogWrite(M1B, 0);
    analogWrite(M2F, 0);
    analogWrite(M2B, speed);
+   Serial.println("Moving Right");
 }
 
 void turnLeft(int speed){
@@ -194,6 +212,7 @@ void turnLeft(int speed){
    analogWrite(M1B, speed);
    analogWrite(M2F, speed);
    analogWrite(M2B, 0);
+   Serial.println("Moving Left");
 }
 
 void turn180() {
@@ -205,21 +224,30 @@ void eStop(){
    analogWrite(M1B, 0);
    analogWrite(M2F, 0);
    analogWrite(M2B, 0);
+   Serial.println("Stopped");
 }
 
 void openServo() {
-  for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
+  /*for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
     servo1.write(i);
     servo2.write(j);
     delay(2);
-  } 
+  }*/
+  Serial.println("Opening Servo");
+  servo1.write(90);
+  servo2.write(15);
+  Serial.println("Serial Opened"); 
 }
 
 void closeServo() {
-  for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
+  /*for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
     servo1.write(j);
     servo2.write(i);
     delay(2);
-  }
+  }*/
+  Serial.println("Closing Servo");
+  servo1.write(15);
+  servo2.write(90);
+  Serial.println("Serial Closed");
 }
 
