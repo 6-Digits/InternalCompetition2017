@@ -328,4 +328,3 @@ void closeServo() {
   servo2.write(90);
   Serial.println("Servo Closed");
 }
-
