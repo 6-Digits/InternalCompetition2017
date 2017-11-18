@@ -16,10 +16,10 @@ boolean colorCorrect, onBL, haveBlock;
 int speed = 100;
 double black;
 // How long it will take to then switch / change direction of motor and the amount of time it takes to turn
-long turn, endZone, delays;
+long turn = 100, endZone = 100, delays = 100;
 
 // Safe distance from the pit. 
-double safeDist, pitDist; 
+double safeDist = 100, pitDist = 100; 
 
 const int infared = 3; 
 //colorSensor, radio;
@@ -38,31 +38,30 @@ boolean auton = false;
 byte raw_data[7];
 
 void checkData() {
-   
-//Wait until at least 6 bytes are available. We expect 6 bytes at a time from msg
-if (Serial.available() >= 6) {
-
-  for(int i = 0; i < 6; i++) {
-    raw_data[i] = Serial.read();
-//      Serial.print(" Data: ");
-//      Serial.print(raw_data[i]);
-  }
-
-//   If we get out of sync realign data. Could also try Serial.flush() instead if not aligned
-  for(int i = 0; i < 6; i++) {
-    if(raw_data[0] == 76 && raw_data[3] == 82) {
-      break;
+  //Wait until at least 6 bytes are available. We expect 6 bytes at a time from msg
+  if (Serial.available() >= 6) {
+  
+    for (int i = 0; i < 6; i++) {
+      raw_data[i] = Serial.read();
+        Serial.print(" Data: ");
+        Serial.print(raw_data[i]);
     }
-    byte temp = raw_data[0];
-    raw_data[0] = raw_data[1];
-    raw_data[1] = raw_data[2];
-    raw_data[2] = raw_data[3];
-    raw_data[3] = raw_data[4];
-    raw_data[4] = raw_data[5];
-    raw_data[5] = temp;
+  
+    //If we get out of sync realign data. Could also try Serial.flush() instead if not aligned
+    for (int i = 0; i < 6; i++) {
+      if (raw_data[0] == 76 && raw_data[3] == 82) {
+        break;
+      }
+      byte temp = raw_data[0];
+      raw_data[0] = raw_data[1];
+      raw_data[1] = raw_data[2];
+      raw_data[2] = raw_data[3];
+      raw_data[3] = raw_data[4];
+      raw_data[4] = raw_data[5];
+      raw_data[5] = temp;
+    }
+    raw_data[6] = 255;
   }
-  raw_data[6] = 255;
-}
 }
 
 void setup() {
@@ -79,13 +78,17 @@ void setup() {
   pinMode(M1B, OUTPUT);
   pinMode(M2F, OUTPUT);
   pinMode(M2B, OUTPUT);
+  pinMode(led, OUTPUT);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
   //Serial.pinMode(radio, INPUT);
   
   eStop();
 }
 
 void loop() {
-  checkData(); // Checks data and updates raw_data global variable
+  // Checks data and updates raw_data global variable
+  checkData();
 
   //Raw data[6] is a flag that checkdata sets. Make sure to set this to other than 255 if we have tended to it        
    if(raw_data[6] == 255) {
@@ -93,13 +96,54 @@ void loop() {
       for(int i = 0; i < 6; i++) {
         Serial.print(" ");
         Serial.print(raw_data[i]);
+
+        if (i == 1) {
+          if (raw_data[1] >= 0 && raw_data[1] < 128) {
+            //Motor 1 Forward
+            analogWrite(M1F, ((int)raw_data) );
+            analogWrite(M1B, 0);
+            Serial.println("M1F");
+          }
+          if (raw_data[1] > 127 && raw_data[1] < 256) {
+            //Motor 1 Backwards
+            analogWrite(M1B, ((int)raw_data[4] - 128) );
+            analogWrite(M1F, 0);
+            Serial.println("M1B");
+          }
+        }
+        if (i == 4) {
+          if (raw_data[4] >= 0 && raw_data[4] < 128) {
+            //Motor 2 Forward
+            analogWrite(M2F, ((int)raw_data[4]) );
+            analogWrite(M2B, 0);
+            Serial.println("M2F");
+          }
+          if (raw_data[4] > 127 && raw_data[4] < 256) {
+            //Motor 2 Backwards
+            analogWrite(M2B, ((int)raw_data[4] - 128) );
+            analogWrite(M2F, 0);
+            Serial.println("M2B");
+          }
+        }
+        if (i == 2) {
+          if (raw_data[2] > 0) {
+            //Opens Servo
+            openServo();
+          }
+        }
+        if (i == 5) {
+          if (raw_data[5] > 0) {
+            //Close Servo
+            closeServo();
+          }
+        }
       }
-        Serial.println("");
+      Serial.println("");
    }
 
   analogWrite(led, raw_data[1]);
   
-  checkInput();
+  //checkInput();
   
   if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
     // speeds are different - determine after testing - Sam
@@ -182,11 +226,11 @@ boolean checkBL() {
   }
 }
 
-void checkInput() {
+/*void checkInput() {
   char autoButton = Serial.read();
-  /*if (Serial.available() > 0) {
+  if (Serial.available() > 0) {
     autoButton = Serial.read();
-  }*/
+  }
 
   if (autoButton == 'm') {
     auton = !auton;
@@ -230,7 +274,7 @@ void checkInput() {
       closeServo();
     }
   }
-}
+}*/
 
 void moveForward(int speed){
    analogWrite(M1F, speed);
