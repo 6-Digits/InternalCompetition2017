@@ -28,6 +28,7 @@ const int M1B = 6;
 const int M2F = 7;
 const int M2B = 8;
 const int led = 7;
+boolean ledValue = true;
 
 boolean auton = false;
 
@@ -145,7 +146,7 @@ void loop() {
   
   //checkInput();
   
-  if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
+  /*if (haveBlock && distanceOne < pitDist && distanceTwo < pitDist) {
     // speeds are different - determine after testing - Sam
     moveForward(speed); 
     delay(endZone);
@@ -159,10 +160,10 @@ void loop() {
   } 
   else {
     blockBlock(speed);
-  }
+  }*/
 }
 
-void blackLineFollower() {
+/*void blackLineFollower() {
   // black Line Follower + Turn at the end of the line (corner turns - Darren Kong)
   if (distanceOne < safeDist && distanceTwo < safeDist) {
     turnRight(speed);
@@ -198,9 +199,9 @@ void blackLineFollower() {
       }
     }
   }
-}
+}*/
 
-void blockBlock(double speed) {
+/*void blockBlock(double speed) {
   moveForward(speed);
   delay(delays);
   closeServo();
@@ -215,16 +216,16 @@ void blockBlock(double speed) {
   delay(turn);
   moveBackward(speed);
   delay(delays);
-}
+}*/
 
-boolean checkBL() {
+/*boolean checkBL() {
   if (analogRead(infared) < black) {
     onBL = false;
   }
   else {
     onBL = true;
   }
-}
+}*/
 
 /*void checkInput() {
   char autoButton = Serial.read();
@@ -306,10 +307,6 @@ void turnLeft(int speed){
    Serial.println("Moving Left");
 }
 
-void turn180() {
-  
-}
-
 void eStop(){
    analogWrite(M1F, 0);
    analogWrite(M1B, 0);
@@ -319,11 +316,6 @@ void eStop(){
 }
 
 void openServo() {
-  /*for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
-    servo1.write(i);
-    servo2.write(j);
-    delay(2);
-  }*/
   Serial.println("Opening Servo");
   servo1.write(90);
   servo2.write(15);
@@ -331,11 +323,6 @@ void openServo() {
 }
 
 void closeServo() {
-  /*for (int i = 0, j = 90; i < 90 && j > 90; i++, j--) {
-    servo1.write(j);
-    servo2.write(i);
-    delay(2);
-  }*/
   Serial.println("Closing Servo");
   servo1.write(15);
   servo2.write(90);
